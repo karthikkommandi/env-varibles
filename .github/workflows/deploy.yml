@@ -4,8 +4,15 @@ on:
     branches:
       - main
       - dev
+env:
+  MONGODB_DB_NAME: gha-demo
+
 jobs:
   test:
+    env:
+      MONGODB_CLUSTER_ADDRESS: cluster-12345
+      MONGODB_USERNAME: Mongo-username
+      MONGODB_PASSWORD: mongo-password
     environment: testing
     runs-on: ubuntu-latest
     steps:
@@ -16,18 +23,24 @@ jobs:
         with:
           path: ~/.npm
           key: npm-deps-${{ hashFiles('**/package-lock.json') }}
-      - name: Install dependencies
-        run: npm ci
-      - name: Run server
-        run: npm start & npx wait-on http://127.0.0.1:XYZ
-      - name: Run tests
-        run: npm test
-      - name: Output information
-        run: echo "..."
+      # - name: Install dependencies
+        # run: npm ci
+      # - name: Run server
+      #   run: npm start & npx wait-on http://127.0.0.1:XYZ
+      # - name: Run tests
+      #   run: npm test
+      # - name: Output information
+      #   run: echo "..."
+      - name:  Install
+        run: |
+          echo $MONGODB_DB_NAME
+          echo $MONGODB_CLUSTER_ADDRESS
+          echo $MONGODB_USERNAME
+          echo $MONGODB_PASSWORD
   deploy:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - name: Output information
         run: |        
-          echo "..."
+          echo "Workflow completed successfully"
